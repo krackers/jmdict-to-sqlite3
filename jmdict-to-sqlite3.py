@@ -63,8 +63,7 @@ def jmdict_to_sqlite3(input, output, lang=''):
     cursor=connection.cursor()
 
     cursor.execute('CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT)')
-    cursor.execute('CREATE TABLE entry (id INT PRIMARY KEY, kanji TEXT, reading TEXT, gloss TEXT, position TEXT)')
-
+    cursor.execute('CREATE TABLE entry (kanji TEXT, reading TEXT, gloss TEXT, position TEXT)')
     connection.commit()
 
     #Creating metadata
@@ -121,7 +120,9 @@ def jmdict_to_sqlite3(input, output, lang=''):
 
         if id != 0 and position != '':
             converted += 1
-            cursor.execute('INSERT INTO entry VALUES (?, ?, ?, ?, ?)', (id, kanji, reading, gloss if gloss != '' else gloss_en, position))
+            for kanjii in kanji.split(", "):
+                for readingg in reading.split(", "):
+                    cursor.execute('INSERT INTO entry VALUES (?, ?, ?, ?)', (kanjii, readingg, gloss if gloss != '' else gloss_en, position))
         else:
             not_converted += 1
 
